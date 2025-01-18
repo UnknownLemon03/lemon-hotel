@@ -1,0 +1,37 @@
+'use client'
+import Image from 'next/image'
+import React, { useState } from 'react'
+import QR from './QR'
+import AddNewBooking from './AddNewBooking'
+
+export default function Card() {
+    const [qr,setQr] = useState(false)
+    const [show,setShow] = useState(false);
+  return (
+   <>
+    <div className="relative flex flex-col my-6 bg-white shadow-sm border border-slate-200 rounded-lg w-80">
+        {qr && <QR url={'https://chatgpt.com/c/678a6b62-8540-8009-adb9-b9c0f96ebec2'} name={'taj'} close={()=>setQr(false)} />}
+       {!qr &&<> <div className="relative h-fit m-2.5 overflow-hidden text-white rounded-md">
+            <Image height={450} width={500} src="/test.png" alt="card-image" />
+        </div>
+        <div className="p-4">
+            <h6 className="mb-2 text-slate-800 text-xl font-semibold">
+            Hotel gorlock the destroyer 
+            </h6>
+            <p className="text-slate-600 leading-normal font-light">
+            The place is close to Barceloneta Beach 
+            </p>
+        </div>
+        <div className="px-4 pb-4 pt-0 mt-2 flex justify-around">
+            <button onClick={()=>{setShow(e=>!e)}} className="rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                Book 
+            </button>
+            <div onClick={()=>{setQr(true)}} className='cursor-pointer hover:bg-black/20 rounded-lg'>
+                <Image src={"/QR.png"} alt='QR code'  width={50} height={50}/>
+            </div>
+        </div></>}
+    </div>  
+    {show && <AddNewBooking hotelid={1} close={setShow}/>}
+   </>
+  )
+}
