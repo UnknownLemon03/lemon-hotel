@@ -91,6 +91,38 @@ export async function getAllBookingsHotel(hotel_id:number):Promise<{error:string
         return {error:"Error Creating Room",success:false,data:[]}
     }
 }
+export async function getAllHotelsByName(hotelName:string):Promise<{error:string,success:boolean,data:HotelTypeDB[]}>{
+    try{
+      
+        const req = await prisma.hotel.findMany({
+            where:{
+                name:{
+                    contains:hotelName
+                }
+            },
+            include:{
+                images:true
+            }
+        });
+        
+        const data = req.map(e=>{
+            return {
+                id:e.id,
+                name: e.name,
+                city:e.city,
+                state:e.state,
+                pincode:e.pincode,
+                area:e.area,
+                images:e.images.map(e=>e.url),
+                url:e.url,
+            }
+        })
+        return {success:true, error:"",data}
+    }catch(e){
+        return {error:"Error Getting Hotels",success:false,data:[]}
+    }
+}
+
 
 export async function getAllHotels(hotelid?:number):Promise<{error:string,success:boolean,data:HotelTypeDB[]}>{
     try{

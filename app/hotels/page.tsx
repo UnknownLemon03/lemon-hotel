@@ -1,19 +1,41 @@
-import AddNewBooking from "@/components/AddNewBooking";
+'use client'
+import { getAllHotels, getAllHotelsByName } from "@/backend/database";
+import { HotelTypeDB } from "@/backend/Types";
 import Card from "@/components/Card";
 import Search from "@/components/Search";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Home() {
-  const data = Array(100).fill(0);
+  const [hotels,setHotels] = useState<HotelTypeDB[]>([])
+  const [search,setSearch] = useState<string>("")
+  useEffect(()=>{
+    if(search.length != 0) return;
+    getAllHotels().then(e=>{
+      if(e.success){
+        setHotels(e.data);
+      }else 
+        toast.error(e.error)
+    })
+
+  },[search])
+  useEffect(()=>{
+    if(search == "") return;
+    getAllHotelsByName(search).then(e=>{
+      if(e.success){
+        setHotels(e.data)
+      }
+    })
+  },[search])
   return (
   <>
       <div className="px-[10%]">
-        <Search/>
-
+        <Search setSearch={setSearch}/>
         <div className="flex flex-wrap gap-5 justify-center scrollbar-hide">
-        {data.map((e,i)=><div key={i} className="flex justify-center">
-            <Card />
+        {hotels.map((e,i)=><div key={i} className="flex justify-center">
+            <Card data={e}/>
           </div>)}
+      
         </div>
       </div>
   </>

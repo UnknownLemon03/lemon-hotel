@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import qrcode from "qrcode"
 import Image from 'next/image';
-export default function QR({url,name,close}:{name:string,url:string,close:(e?:any)=>void}) {
+export default function QR({url,name,close}:{name:string,url:string,close?:(e?:any)=>void}) {
     const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+    if(!close) close = ()=>{}
     useEffect(()=>{
         qrcode.toDataURL(url)
         .then((dataUrl) => {

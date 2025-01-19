@@ -1,6 +1,7 @@
 'use client'
 import { DeleteHotelServerAction } from "@/backend/serverAction";
 import { HotelTypeDB } from "@/backend/Types";
+import Link from "next/link";
 import { startTransition, useActionState } from "react";
 
 export function TableRow({ data }: { data: HotelTypeDB }) {
@@ -26,7 +27,9 @@ export function TableRow({ data }: { data: HotelTypeDB }) {
       <td className="px-6 py-4">
         <span onClick={handleDelete} className="font-medium text-red-600 mr-2 cursor-pointer">Delete</span>
         <span className="font-medium text-green-500 mr-2 cursor-pointer">Edit</span>
-        <span className="font-medium text-green-500 mr-2 cursor-pointer">QR-code</span>
+        <Link href={`/dashboard/hotels?hotelID=${data.id}`}>
+          <span className="font-medium text-gray-500 mr-2 cursor-pointer">QR</span>
+        </Link>
       </td>
     </tr>
   );

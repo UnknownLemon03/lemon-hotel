@@ -37,6 +37,7 @@ export async function isLogin():Promise<undefined|null|{id:number,name:string}>{
     const cookie = await cookies();
     const token = cookie.get("AUTH");
     if(!token) return null;
+    console.log(token)
     const data = jwt.verify(token.value,process.env.JWT_SECRETE as string) as {id:number,name:string}
     return data;
 }

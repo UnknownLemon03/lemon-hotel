@@ -1,14 +1,20 @@
 'use client'
+import { LogOut } from "@/backend/Auth";
+import { link } from "fs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
-export function Navbar() {
+export function Navbar({isLogin}:{isLogin:boolean}) {
 	const links = [
-		{name:"Home",href:"/"},
-		{name:"Dashboard",href:"/dashboard"},
-		{name:"Login/SignUp",href:"/auth"},
-		{name:"Logout",href:"#"},
+		{name:"Home",href:"/",onClick:()=>{}},
+		{name:"Hotels",href:"/hotels",onClick:()=>{}},
 	]
+  if(isLogin)
+    links.push({name:"Dashboard",href:"/dashboard",onClick:()=>{}},{name:"Logout",href:"#",onClick:()=>{LogOut();toast.success("Logout Successful")}})
+  else
+    links.push({name:"Login/SignUp",href:"/auth",onClick:()=>{}})
+
   const path = usePathname()
 
   if(path.split("/")[1] == "dashboard") return null;
@@ -28,7 +34,7 @@ export function Navbar() {
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg  md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0  dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
         {links.map((e,i)=><li  key={i}>
-              <Link href={e.href} className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">
+              <Link onClick={e.onClick} href={e.href} className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">
           {e.name}
           </Link>
             </li>)}

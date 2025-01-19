@@ -1,3 +1,4 @@
+'use server'
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -5,6 +6,7 @@ import Navbar from "../components/Navbar";
 import ToastProvider from "@/components/ToastProvider";
 import Head from "next/head";
 import Script from "next/script";
+import { isLogin } from "@/backend/Auth";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -15,15 +17,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  
-};
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const session = await isLogin()
+  let user = false
+  if(session) user =true;
   return (
     <html lang="en">
       <head>
@@ -37,7 +40,7 @@ export default function RootLayout({
       >
         <ToastProvider>
           <>
-            <Navbar/>
+            <Navbar isLogin={user}/>
             <div className="h-[90%] relative  scrollbar-hide first-letter:relative">
               <div id="portal" />
                 {children}

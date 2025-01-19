@@ -29,7 +29,7 @@ export default function page() {
     useEffect(()=>{
       if(loginPrev.success){
         toast.success("Login Sucessfull")
-        // redirect("/hotels")
+        redirect("/hotels")
       }else if(loginPrev.error){
         toast.error(loginPrev.error)
       }
@@ -37,7 +37,7 @@ export default function page() {
     useEffect(()=>{
       if(signupPrev.success){
         toast.success("Sign Up Sucessfull")
-        // redirect("/hotels")
+        redirect("/hotels")
       }else if(signupPrev.error){
         toast.error(signupPrev.error)
       }

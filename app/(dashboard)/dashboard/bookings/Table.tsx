@@ -1,6 +1,8 @@
 'use client'
 import { getAllBookingsUser } from '@/backend/database';
 import { BookingsTypeDB } from '@/backend/Types';
+import { getDate } from '@/backend/util';
+import Recipte from '@/components/Recipte';
 import React, { useEffect, useState } from 'react'
 import { start } from 'repl';
 
@@ -48,30 +50,28 @@ export default function Table(){
     </>
 }
 
-function getDate(date:Date){
-
-    return `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
-}
 
 function TableRow({data,Actions}:{key?:number,data:BookingsTypeDB,Actions?:()=>React.Component}) {
-  return (
-   <>
-        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {data.name}
-                </th>
-                <td className="px-6 py-4">
-                    {getDate(data.start)}
-                </td>
-                <td className="px-6 py-4">
-                {getDate(data.end)}
-                </td>
-                <td className="px-6 py-4">
-                    <span className="font-medium text-green-500 mr-2 cursor-pointer">Edit</span>
-                    <span className="font-medium text-gray-600 mr-2 cursor-pointer">View</span>
-                </td>
-        </tr>
-        
-    </>
+    const [hide,setHide] = useState(false)
+    return (
+        <>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {data.name}
+                    </th>
+                    <td className="px-6 py-4">
+                        {getDate(data.start)}
+                    </td>
+                    <td className="px-6 py-4">
+                    {getDate(data.end)}
+                    </td>
+                    <td className="px-6 py-4">
+                        <span className="font-medium text-green-500 mr-2 cursor-pointer">Edit</span>
+                       {hide && <Recipte Booking={data} close={setHide}/>}
+                        <span className="font-medium text-gray-600 mr-2 cursor-pointer" onClick={()=>setHide(true)}>View</span>
+                    </td>
+            </tr>
+            
+        </>
   )
 }
