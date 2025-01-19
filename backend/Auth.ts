@@ -1,9 +1,9 @@
 'use server'
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { PrismaClient } from '@prisma/client';
 import { UserTypeDB } from "./Types";
+import { GetUser } from "./database";
 const prisma  = new PrismaClient();
 export async function CreateJWTSession(e:UserTypeDB){
     const data = {
@@ -41,6 +41,10 @@ export async function isLogin():Promise<undefined|null|{id:number,name:string}>{
     return data;
 }
 
-export async function isAdmin(){
-    return true;
+export async function isAdmin():Promise<boolean>{
+    const data = await isLogin()
+    if(!data) return false;
+    const user = await GetUser(data.id)
+    if(!user.data) return false;
+    return user.data?.admin
 }

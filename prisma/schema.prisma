@@ -52,6 +52,7 @@ model Bookings{
   end DateTime
   user User @relation(fields: [userid], references: [id], onDelete: Cascade)
   // hotel detail if deleted 
+  hotel_id Int
   hotel_name String 
   hotel_address String 
 }

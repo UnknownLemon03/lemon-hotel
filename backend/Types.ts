@@ -47,6 +47,7 @@ export const BookingsTypeDB = z.object({
     purpose: z.string(),
     start: z.date(),
     end: z.date(),
+    hotel_id: z.number(),
     hotel_name: z.string(),
     hotel_address: z.string(),
 });
@@ -60,6 +61,7 @@ export const BookingsType = z.object({
     purpose: z.string(),
     start: z.date(),
     end: z.date(),
+    hotel_id: z.number(),
     hotel_name: z.string(),
     hotel_address: z.string(),
 });

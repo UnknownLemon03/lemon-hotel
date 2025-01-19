@@ -1,10 +1,14 @@
 import React from 'react'
 import TableRow from './TableRow'
 import Navbar from '@/components/Navbar'
+import { redirect } from 'next/navigation';
+import { GetJWTSession } from '@/backend/Auth';
 
-export default function page() {
-  const data = Array(10).fill(1);
-  return (
+export default async function page() {
+        const token = await GetJWTSession();
+        if(!token) return redirect("/auth");
+        const data = Array(10).fill(1);
+    return (
     <>
       <h3 className="text-3xl font-bold dark:text-white mb-5">Bookings</h3>
       <div className="h-[88%] overflow-scroll scrollbar-hide ">

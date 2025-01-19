@@ -1,5 +1,7 @@
 'use client'
-import React, { useState } from 'react'
+import { LoginServerAction, SignUpServerAction } from '@/backend/serverAction'
+import { redirect } from 'next/navigation'
+import React, { FormEvent, startTransition, useActionState, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 export default function page() {
@@ -7,10 +9,43 @@ export default function page() {
     function show(){
       toast.success("yess logged")
     }
+    const [loginPrev,loginAction] = useActionState(LoginServerAction,{success:false,error:""});
+    const [signupPrev,signupAction] = useActionState(SignUpServerAction,{success:false,error:""});
+    function handleSubmit(e:FormEvent<HTMLFormElement>){
+      const reqData = e.currentTarget;
+      e.preventDefault();
+      if(login){
+        // login
+        startTransition(()=>{
+          loginAction(new FormData(reqData));
+        })
+      }else{
+        // sign up
+        startTransition(()=>{
+          signupAction(new FormData(reqData));
+        })
+      }
+    }
+    useEffect(()=>{
+      if(loginPrev.success){
+        toast.success("Login Sucessfull")
+        // redirect("/hotels")
+      }else if(loginPrev.error){
+        toast.error(loginPrev.error)
+      }
+    },[loginPrev])
+    useEffect(()=>{
+      if(signupPrev.success){
+        toast.success("Sign Up Sucessfull")
+        // redirect("/hotels")
+      }else if(signupPrev.error){
+        toast.error(signupPrev.error)
+      }
+    },[signupPrev])
   return (
     <>
         <div className='flex justify-center  mb-[50%]'>
-           <div className="md:max-w-md w-full px-4 py-4">
+           <form onSubmit={handleSubmit} className="md:max-w-md w-full px-4 py-4">
             <div className="mb-8">
             {login && <h3 className="text-gray-800 text-3xl font-extrabold">Sign in</h3>}
             {!login && <h3 className="text-gray-800 text-3xl font-extrabold">Sign Up</h3>}
@@ -54,13 +89,13 @@ export default function page() {
                 </span>
             </p>}
             <div className="mt-12">
-            <button type="button" onClick={show} className="cursor-pointer w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+            <button type="submit" className="cursor-pointer w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
                 {login ? "Sign in" : "Sign Up"}
             </button>
             </div>
 
              
-          </div>
+          </form>
         </div>
     </>
   )

@@ -32,13 +32,13 @@ export default function AddHotel() {
                 })
         }
   return (<>
-    <div className='w-fit z-10 flex justify-center items-start absolute top-[2%] left-[45%] overflow-hidden'>
+    <div className='w-fit z-10 flex justify-center items-center fixed top-[2%] left-[45%] mx-auto overflow-hidden'>
         <div  
             className={`overflow-hidden backdrop-blur-3xl w-full h-full fixed top-0 left-[0%] ${!show && 'hidden'}`} 
             onClick={()=>setShow(e=>!e)}
         />
 
-       {show && <div className={`min-w-96 z-10 p-5 overflow-hidden`}>
+       {show && <div className={`min-w-96 z-10 p-5 overflow-hidden `}>
             <div>
                 <form className="max-w-sm mx-auto" onSubmit={handleSubmit} >
                     {FormFileds.map((e,i)=><div key={i} className="mb-5">

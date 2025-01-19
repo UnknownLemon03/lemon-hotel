@@ -24,10 +24,10 @@ export default async function page() {
                         No.
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Hotel Name
+                        User
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Address 
+                        Email 
                     </th>
                     <th scope="col" className="px-6 py-3">
                         Action
@@ -39,7 +39,7 @@ export default async function page() {
             {data.length == 0 &&<>
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <td colSpan={4} className="px-6 text-center py-4">
-                        No Hotel
+                        No Users
                     </td>
                 </tr>
             </>}

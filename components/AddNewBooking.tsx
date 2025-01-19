@@ -13,6 +13,7 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
     const [end,setEnd] = useState<Date>(new Date());
     const [element,setElement] = useState<null|Element>(null)
     const [preState,action,isPending] = useActionState(AddBookingServerAction,{error:"",success:false})
+    const [thank,setThank] = useState(false);
     const FormFileds = [
         { name: "name", placeholder: "Full Name", label: "Full Name", type: "text" },
         { name: "email", placeholder: "Email Address", label: "Email Address", type: "email" },
@@ -21,14 +22,21 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
         { name: "address", placeholder: "Address", label: "Address", type: "text" },
         { name: "purpose", placeholder: "Purpose of Booking", label: "Purpose of Booking", type: "text" },
     ];
-
+    let id: NodeJS.Timeout;
+    function closeCard(){
+        setThank(e=>!e);
+        id = setTimeout(()=>close(false),2000)
+    }
     useEffect(()=>{
         if(preState.success){
             toast.success("Hotel booking made sucessfully")
-            close(false);
+            closeCard()
         }else if(!preState.success && preState.error){
-            close(false);
+            closeCard()
             toast.error(preState.error)
+        }
+        ()=>{
+            clearTimeout(id);
         }
     },[preState])
     useEffect(()=>{
@@ -49,7 +57,7 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
     if(!element) return null;
   return createPortal(<>
 
-    <div className={`fixed top-[5%] left-0 max-h-screen w-full z-10 p-5 overflow-scroll`}>
+    {!thank && <div className={`fixed top-[5%] left-0 max-h-screen w-full z-10 p-5 overflow-scroll`}>
         <div  
             onClick={()=>close(false)}
             className={`overflow-clip backdrop-blur-3xl w-full h-full fixed top-0 left-[0%]`} 
@@ -74,6 +82,27 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
                 </button>
             </form>
         </div>
-    </div>
+    </div>}
+
+    {thank &&<>
+    <div  
+        onClick={()=>close(false)}
+        className={`overflow-clip z-10 backdrop-blur-3xl w-full h-full fixed top-0 left-[0%]`} 
+    />
+    
+    <div className="z-10 fixed top-[25%]  left-0 mx-auto w-full p-2 flex items-center justify-center max-h-screen">
+        <div className="p-4 bg-white rounded shadow-lg ring ring-indigo-600/50">
+            <div className="flex flex-col items-center space-y-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="text-green-600 w-28 h-28" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" strokeWidth="1">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h1 className="text-4xl font-bold">Thank You !</h1>
+                <p>Thank you for your interest! Hotel Booking has been made.</p>
+            
+            </div>
+        </div>
+    </div></>}
     </>,element)
 }

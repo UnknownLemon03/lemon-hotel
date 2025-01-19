@@ -1,6 +1,7 @@
-'use server'
+"use server"
 import { PrismaClient } from '@prisma/client';
-import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB } from './Types';
+import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB, UserTypeDB } from './Types';
+import bcrypt from "bcrypt"
 const prisma  = new PrismaClient();
 
 export async function AddHotel(data:HotelType):Promise<{error:string,success:boolean}>{
@@ -86,13 +87,35 @@ export async function getAllBookingsHotel(hotel_id:number):Promise<{error:string
     }
 }
 
-export async function getAllHotels():Promise<{error:string,success:boolean,data:HotelTypeDB[]}>{
+export async function getAllHotels(hotelid?:number):Promise<{error:string,success:boolean,data:HotelTypeDB[]}>{
     try{
+        if(hotelid){
+            const req = await prisma.hotel.findFirst({
+                where:{id:hotelid},
+                include:{
+                    images:true
+                }
+            })
+            if(!req) throw new Error("Can't find hotel")
+            const data = [{
+                    id:req.id,
+                    name: req.name,
+                    city:req.city,
+                    state:req.state,
+                    pincode:req.pincode,
+                    area:req.area,
+                    images:req.images.map(req=>req.url),
+                    url:req.url,
+                }]
+
+            return {success:true,error:"",data}
+        }
         const req = await prisma.hotel.findMany({
             include:{
                 images:true
             }
         });
+        
         const data = req.map(e=>{
             return {
                 id:e.id,
@@ -107,6 +130,74 @@ export async function getAllHotels():Promise<{error:string,success:boolean,data:
         })
         return {success:true, error:"",data}
     }catch(e){
-        return {error:"Error Creating Room",success:false,data:[]}
+        return {error:"Error Getting Hotels",success:false,data:[]}
+    }
+}
+
+export async function SignUpUser(data:UserTypeDB):Promise<{error:string,success:boolean,data:UserTypeDB|null}>{
+    try{
+        const hashPassword = bcrypt.hashSync(data.password,12);
+        const req = await prisma.user.create({
+            data:{
+                email:data.email,
+                password:hashPassword,
+                admin:false,
+            }
+        })
+        return {success:true, error:"",data:req}
+    }catch(e){
+        if(e instanceof Error){
+            return {error:e.name+": "+e.message,success:false,data:null}
+        }
+        return {error:"Error Signing Up",success:false,data:null}
+    }
+}
+
+export async function LoginUser(data:UserTypeDB):Promise<{error:string,success:boolean,data:UserTypeDB|null}>{
+    try{
+        const user = await prisma.user.findFirst({
+            where:{
+                email:data.email
+            }
+        })
+        if(!user) throw Error("No User found");
+        const success = bcrypt.compareSync(data.password,user.password)
+        return {success:success, error:success?"":"Invalid Credentials",data:user}
+    }catch(e){
+        if(e instanceof Error){
+            return {error:e.name+": "+e.message,success:false,data:null}
+        }
+        return {error:"Error Login in",success:false,data:null}
+    }
+}
+
+export async function GetUser(id:number):Promise<{error:string,success:boolean,data:UserTypeDB|null}>{
+    try{
+        const user = await prisma.user.findFirst({
+            where:{
+                id
+            }
+        })
+        if(!user) throw Error("No User found");
+        return {success:true, error:"",data:user}
+    }catch(e){
+        if(e instanceof Error){
+            return {error:e.name+": "+e.message,success:false,data:null}
+        }
+        return {error:"User not found",success:false,data:null}
+    }
+}
+
+export async function AddHotelBooking(data:BookingsType):Promise<{error:string,success:boolean}>{
+    try{
+        const req = await prisma.bookings.create({
+            data
+        })
+        return {success:true, error:""}
+    }catch(e){
+        if(e instanceof Error){
+            return {error:e.name+": "+e.message,success:false}
+        }
+        return {error:"User not found",success:false}
     }
 }

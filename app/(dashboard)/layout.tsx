@@ -1,7 +1,8 @@
+import { isAdmin, LogOut } from "@/backend/Auth";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function layout({
+export default async function layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -9,10 +10,13 @@ export default function layout({
     const link = [
         {name:"Home",href:"/",image:"/home.png"},
         {name:"Bookings",href:"/dashboard/bookings",image:"/keys.png"},
-        {name:"Manage Hotels",href:"/dashboard/hotels",image:"/hotel.png"},
-        {name:"Users",href:"#",image:"/user.png"},
-        {name:"Logout",href:"/",image:"/logout.png"},
+        {name:"Logout",href:"/",image:"/logout.png",onclick:LogOut},
     ]
+    const Admin = await isAdmin()
+    if(Admin){
+      link.splice(2,0,{name:"Manage Hotels",href:"/dashboard/hotels",image:"/hotel.png"})
+      link.splice(3,0,{name:"Users",href:"/dashboard/",image:"/user.png"})
+    }
   return (
     <div className="pt-8">
        
@@ -33,7 +37,7 @@ export default function layout({
             </span>
             <ul className="space-y-2 font-medium">
                {link.map((e,i)=> <li key={i}>
-                    <Link href={e.href} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <Link href={e.href} onClick={e.onclick} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <Image height={50} width={50} alt={e.name} src={e.image} />
                     <span className="ms-3">{e.name}</span>
                     </Link>
