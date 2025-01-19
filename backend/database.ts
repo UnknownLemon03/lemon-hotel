@@ -2,6 +2,7 @@
 import { PrismaClient } from '@prisma/client';
 import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB, UserTypeDB } from './Types';
 import bcrypt from "bcrypt"
+import { isLogin } from './Auth';
 const prisma  = new PrismaClient();
 
 export async function AddHotel(data:HotelType):Promise<{error:string,success:boolean}>{
@@ -61,12 +62,16 @@ export async function AddBookings(data:BookingsType):Promise<{error:string,succe
     }
 }
 
-export async function getAllBookingsUser(id:number):Promise<{error:string,success:boolean,data:BookingsTypeDB[]}>{
+export async function getAllBookingsUser({start=0,limit=10}:{start:number,limit:number}):Promise<{error:string,success:boolean,data:BookingsTypeDB[]}>{
     try{
+        const session = await isLogin()
+        if(!session) throw new Error("User not Sign in")
         const data = await prisma.bookings.findMany({
             where:{
-                id
-            }
+                userid:session.id
+            },
+            skip:start,
+            take:limit
         })
         return {success:true, error:"",data}
     }catch(e){
