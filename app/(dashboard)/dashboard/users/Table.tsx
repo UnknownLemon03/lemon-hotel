@@ -37,13 +37,13 @@ export default function Table(){
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                       <th scope="col" className="px-6 py-3">
-                          Hotel Name
+                          Sr No.
                       </th>
                       <th scope="col" className="px-6 py-3">
-                          From
+                          Email
                       </th>
                       <th scope="col" className="px-6 py-3">
-                          To
+                          Role
                       </th>
                       <th scope="col" className="px-3 py-3">
                           Action
@@ -85,6 +85,7 @@ function TableRow({data,Actions,index}:{index:number,data:UserTypeDB,Actions?:()
     useEffect(()=>{
         if(preState.success && preState.error==""){
             toast.success("User is made admin")
+            data.admin = !admin
             setAdmin(e=>!e)
         }else if(preState.error && !preState.success){
             toast.success("User is removed as admin")
