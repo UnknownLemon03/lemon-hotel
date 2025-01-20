@@ -3,6 +3,7 @@ import { getAllBookingsUser } from '@/backend/database';
 import { BookingsTypeDB } from '@/backend/Types';
 import { getDate } from '@/backend/util';
 import Recipte from '@/components/Recipte';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
 
@@ -10,12 +11,14 @@ export default function Table(){
     const [data,setData] = useState<BookingsTypeDB[]>([])
     const [range,setRange] = useState<number>(0);
     const [loading,setLoading]=useState(false);
-    const [latest,setLatest] = useState(true);
+    const [latest,setLatest] = useState(false);
+    const [disableLoadMore,setDisableLoadMore] = useState(false);
     function fetchMore(){
         setLoading(true);
         getAllBookingsUser({start:range,limit:10}).then(e=>{
             setRange(count => count+e.data.length)
             if(e.data){
+                if(e.data.length == 0) setDisableLoadMore(true)
                 setData(data=>data.concat(...e.data))
             }
             setLoading(false);
@@ -58,7 +61,7 @@ export default function Table(){
               <tbody>
                   {FilteredData.length > 0 && <>
                       {FilteredData.map((e,i)=><TableRow data={e} key={i}/>)}
-                          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                          {!disableLoadMore && <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                               <td colSpan={4} onClick={fetchMore} className="px-6 py-4 text-center cursor-pointer">
                                   {!loading && "Load More" }
                                   <div className='w-full h-full flex justify-center'>
@@ -68,7 +71,7 @@ export default function Table(){
                                       </svg>}
                                   </div>
                               </td>
-                          </tr>
+                          </tr>}
                       </>}
                       {FilteredData.length == 0 &&<>
                           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -86,7 +89,7 @@ export default function Table(){
 
 function TableRow({data,Actions}:{key?:number,data:BookingsTypeDB,Actions?:()=>React.Component}) {
     const [hide,setHide] = useState(false)
-    
+    console.log("booking id",data.id)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -115,9 +118,11 @@ function TableRow({data,Actions}:{key?:number,data:BookingsTypeDB,Actions?:()=>R
                     {getDate(data.end)}
                     </td>
                     <td className="px-6 py-4">
-                        <span className="font-medium text-green-500 mr-2 cursor-pointer">Edit</span>
+                            {startDate.getTime() > today.getTime() && <Link href={`/dashboard/bookings?hotelID=${data.id}`} className={`font-medium text-green-500 mr-2 cursor-pointer`}>
+                                Edit
+                            </Link>}
                        {hide && <Recipte Booking={data} close={setHide}/>}
-                        <span className="font-medium text-gray-600 mr-2 cursor-pointer" onClick={()=>setHide(true)}>View</span>
+                        <span className={`font-medium text-gray-600 mr-2 cursor-pointer `} onClick={()=>setHide(true)}>View</span>
                     </td>
             </tr>
             

@@ -1,8 +1,8 @@
 "use server"
 
 import { PreviewData } from "next";
-import { BookingsType, HotelType } from "./Types";
-import { AddHotel, AddHotelBooking, DeleteHotel, getAllHotels, LoginUser, SignUpUser } from "./database";
+import { BookingsType, BookingsTypeDB, HotelType } from "./Types";
+import { AddHotel, AddHotelBooking, DeleteHotel, getAllHotels, LoginUser, SignUpUser, UpdatingBooking } from "./database";
 import { revalidatePath } from "next/cache";
 import { CreateJWTSession, isLogin } from "./Auth";
 
@@ -18,14 +18,11 @@ export async function AddNewHotelServerAction(formData:PreviewData,FromData:Form
             pincode:parseInt(FromData.get("pincode") as string),
             images:['some ramdon url'],
         }
-        console.log(data)
         await new Promise((res,err)=>{ setTimeout(()=>res(true),1000)})
         const req = await AddHotel(data);
-        console.log(req)
         revalidatePath("/dashboard/hotels")
         return req
     }catch(e){
-        console.log(e)
         if(e instanceof Error){
             return {error:`${e.message}`,success:false}
         }
@@ -43,7 +40,6 @@ export async function DeleteHotelServerAction(formData:PreviewData,FromData:Form
         revalidatePath("/dashboard/hotels")
         return req;
     }catch(e){
-        console.log(e)
         if(e instanceof Error){
             return {error:`${e.message}`,success:false}
         }
@@ -104,7 +100,6 @@ export async function LoginServerAction(formData:PreviewData,FromData:FormData):
         await CreateJWTSession(req.data!)
         return {success:req.success,error:req.error};
     }catch(e){
-        console.log(e)
         if(e instanceof Error){
             return {error:`${e.message}`,success:false}
         }
@@ -124,10 +119,51 @@ export async function SignUpServerAction(formData:PreviewData,FromData:FormData)
             throw Error("Error Logining In")
         }
         await CreateJWTSession(req.data!)
-        console.log(req)
         return {success:req.success,error:req.error};
     }catch(e){
-        console.log(e)
+        if(e instanceof Error){
+            return {error:`${e.message}`,success:false}
+        }
+        return {error:"Logout fail",success:false}
+    }
+}
+
+export async function BookingEditsServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean}>{
+    try{
+        const session  = await isLogin();
+        if(!session) throw new Error("Not Signed in")
+        const hotelid = parseInt(FromData.get('hotel_id') as string);
+        if(isNaN(hotelid)) throw new Error("Not Valid hotel id")
+        console.log(FromData.get("id"))
+        if(isNaN(parseInt(FromData.get("id") as string))) throw new Error("Booking not found")
+        const data: BookingsTypeDB = {
+            id:parseInt(FromData.get("id") as string),
+            userid:session.id,
+            name: FromData.get("name") as string,
+            email: FromData.get("email") as string,
+            id_number: FromData.get("id_number") as string,
+            number: FromData.get("number") as string,
+            address: FromData.get("address") as string,
+            purpose: FromData.get("purpose") as string,
+            start: new Date(FromData.get("start") as string),  
+            end: new Date(FromData.get("end") as string),     
+            hotel_id: hotelid,  
+            hotel_name: "",  
+            hotel_address: "", 
+        };
+        if (!(data.start instanceof Date) || isNaN(data.start.getTime())) {
+            throw new Error("Invalid start date");
+        }
+        if (!(data.end instanceof Date) || isNaN(data.end.getTime())) {
+            throw new Error("Invalid end date");
+        }
+        const req = await UpdatingBooking(data)
+        if(req.success){
+            revalidatePath('/dashboard/bookings')
+        }
+        console.log(data)
+        return req;
+    }catch(e){
         if(e instanceof Error){
             return {error:`${e.message}`,success:false}
         }

@@ -7,7 +7,6 @@ const prisma  = new PrismaClient();
 
 export async function AddHotel(data:HotelType):Promise<{error:string,success:boolean}>{
     try{
-        console.log(data,'asdflkasdjfalksdjfalskdfjasdlk')
         const req = await prisma.hotel.create({
             data: {
               name: data.name,
@@ -23,7 +22,6 @@ export async function AddHotel(data:HotelType):Promise<{error:string,success:boo
           });
         return {success:true, error:""}
     }catch(e){
-        console.log(e)
         return {error:"Error Creating Room",success:false}
     }
 }
@@ -238,3 +236,78 @@ export async function AddHotelBooking(data:BookingsType):Promise<{error:string,s
         return {error:"User not found",success:false}
     }
 }
+
+export async function getBookingById(id:number):Promise<{error:string,success:boolean,data:BookingsTypeDB|null}>{
+    try{
+        const req = await prisma.bookings.findFirst({
+            where:{
+                id
+            }
+        })
+        return {success:true, error:"",data:req}
+    }catch(e){
+        if(e instanceof Error){
+            return {error:e.name+": "+e.message,success:false,data:null}
+        }
+        return {error:"User not found",success:false,data:null}
+    }
+}
+
+export async function UpdatingBooking(data: BookingsTypeDB): Promise<{ error: string; success: boolean }> {
+    try {
+        const normalizeDate = (date: Date) => {
+            const normalized = new Date(date);
+            normalized.setHours(0, 0, 0, 0);
+            return normalized;
+        };
+
+        const today = normalizeDate(new Date());
+        const newStart = normalizeDate(data.start);
+
+        if (newStart <= today) {
+            return { error: "Cannot edit past or ongoing bookings", success: false };
+        }
+
+        const existingBooking = await prisma.bookings.findUnique({
+            where: { id: data.id },
+            select: { start: true },
+        });
+
+        if (!existingBooking) {
+            return { error: "Booking not found", success: false };
+        }
+
+        const dbStart = normalizeDate(existingBooking.start);
+
+        if (dbStart <= today) {
+            return { error: "Cannot edit past or ongoing bookings", success: false };
+        }
+
+        const req = await prisma.bookings.update({
+            where: {
+                id: data.id,
+                AND: {
+                    userid: data.userid,
+                },
+            },
+            data: {
+                name: data.name,
+                email: data.email,
+                id_number: data.id_number,
+                number: data.number,
+                address: data.address,
+                purpose: data.purpose,
+                start: data.start,
+                end: data.end,
+            },
+        });
+
+        return { success: true, error: "" };
+    } catch (e) {
+        if (e instanceof Error) {
+            return { error: e.name + ": " + e.message, success: false };
+        }
+        return { error: "Unexpected error occurred", success: false };
+    }
+}
+
