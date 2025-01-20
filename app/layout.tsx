@@ -31,7 +31,7 @@ export default async function RootLayout({
     <html lang="en">
       <head>
         <Script
-          src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"
+          src="https://unpkg.com/flowbite@1.4.5/dist/flowbite.js"
           type="text/javascript"
         />
       </head>

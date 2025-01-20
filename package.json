@@ -15,7 +15,6 @@
     "@types/qrcode": "^1.5.5",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
-    "flowbite-react": "^0.10.2",
     "jsonwebtoken": "^9.0.2",
     "next": "15.1.4",
     "qrcode": "^1.5.4",

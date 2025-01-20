@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import QR from './QR'
 import AddNewBooking from './AddNewBooking'
 import { HotelTypeDB } from '@/backend/Types'
+import Slider from './Slider'
 
 export default function Card({data}:{data:HotelTypeDB}) {
     const [qr,setQr] = useState(false)
@@ -13,7 +14,8 @@ export default function Card({data}:{data:HotelTypeDB}) {
     <div className="relative flex flex-col  bg-white shadow-sm border border-slate-200 mx-auto rounded-lg w-full min-w-[300px] max-w-[300px]">
         {qr && <QR  url={'https://chatgpt.com/c/678a6b62-8540-8009-adb9-b9c0f96ebec2'} name={data.name} close={()=>setQr(false)} />}
        {!qr &&<> <div className="relative h-fit m-2.5 overflow-hidden text-white rounded-md">
-            <Image height={450} width={500} src="/test.png" alt="card-image" />
+          
+            <Slider/>
         </div>
         <div className="p-4">
             <h6 className="mb-2 text-slate-800 text-xl font-semibold">
