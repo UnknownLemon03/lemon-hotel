@@ -45,7 +45,7 @@ export default async function layout({
         </div>
         </aside>
 
-        <div className="p-1 px-16 sm:ml-64 ">
+        <div className="p-1 px-[3%] sm:ml-64 ">
             {children}
         </div>
 
