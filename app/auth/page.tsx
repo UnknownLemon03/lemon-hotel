@@ -5,10 +5,7 @@ import React, { FormEvent, startTransition, useActionState, useEffect, useState 
 import toast from 'react-hot-toast'
 
 export default function page() {
-    const [login,setLogin] = useState<boolean>(false)
-    function show(){
-      toast.success("yess logged")
-    }
+    const [login,setLogin] = useState<boolean>(true)
     const [loginPrev,loginAction] = useActionState(LoginServerAction,{success:false,error:""});
     const [signupPrev,signupAction] = useActionState(SignUpServerAction,{success:false,error:""});
     function handleSubmit(e:FormEvent<HTMLFormElement>){
@@ -47,7 +44,7 @@ export default function page() {
         <div className='flex justify-center  mb-[50%]'>
            <form onSubmit={handleSubmit} className="md:max-w-md w-full px-4 py-4">
             <div className="mb-8">
-            {login && <h3 className="text-gray-800 text-3xl font-extrabold">Sign in</h3>}
+            {login && <h3 className="text-gray-800 text-3xl font-extrabold">Login in</h3>}
             {!login && <h3 className="text-gray-800 text-3xl font-extrabold">Sign Up</h3>}
             </div>
               <div>
