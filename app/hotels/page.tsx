@@ -30,7 +30,9 @@ export default function Home() {
   return (
   <>
       <div className="px-[10%]">
-        <Search setSearch={setSearch}/>
+        <div className="w-full flex justify-center">
+          <Search setSearch={setSearch}/>
+        </div>
         <div className="flex flex-wrap gap-5 justify-center scrollbar-hide">
         {hotels.map((e,i)=><div key={i} className="flex justify-center">
             <Card data={e}/>

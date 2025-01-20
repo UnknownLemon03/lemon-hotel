@@ -1,9 +1,10 @@
 'use client'
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 
-export default function Search({setSearch}:{setSearch:Dispatch<SetStateAction<string>>}) {
+export default function Search({setSearch,delay}:{setSearch:Dispatch<SetStateAction<string>>,delay?:number}) {
     const ref = useRef<HTMLInputElement>(null);
     let id:NodeJS.Timeout;
+    if(!delay) delay = 800
     function handleSearchChange(search:string){
         if(search == ""){
             setSearch("")
@@ -12,13 +13,13 @@ export default function Search({setSearch}:{setSearch:Dispatch<SetStateAction<st
         clearTimeout(id)
         id = setTimeout(()=>{
             setSearch(search)
-        },800)
+        },delay)
     }
 
 
     return (
     <>
-        <form className="max-w-xl mx-auto mb-5 min-w-[300px]">   
+        <form className="max-w-xl mx-auto mb-5 min-w-[50%] z-1">   
             <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
             <div className="relative">
                 <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">

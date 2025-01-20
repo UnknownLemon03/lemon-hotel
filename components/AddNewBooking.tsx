@@ -62,7 +62,7 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
             onClick={()=>close(false)}
             className={`overflow-clip backdrop-blur-3xl w-full h-full fixed top-0 left-[0%]`} 
         />
-        <div className='  flex justify-center items-center'>
+        <div className='flex justify-center items-center'>
             <form className="z-10 mx-auto" onSubmit={handleSubmit} >
                 {FormFileds.map((e,i)=><div key={i} className="relative z-0 w-full mb-5 group">
                     <input type={e.type} name={e.name} id={e.name} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-900 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
