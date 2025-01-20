@@ -2,7 +2,7 @@
 import { PrismaClient } from '@prisma/client';
 import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB, UserTypeDB } from './Types';
 import bcrypt from "bcrypt"
-import { isLogin } from './Auth';
+import { isAdmin, isLogin } from './Auth';
 const prisma  = new PrismaClient();
 
 export async function AddHotel(data:HotelType):Promise<{error:string,success:boolean}>{
@@ -311,3 +311,33 @@ export async function UpdatingBooking(data: BookingsTypeDB): Promise<{ error: st
     }
 }
 
+export async function getAllUser({start=0,limit=10}:{start:number,limit:number}):Promise<{error:string,success:boolean,data:UserTypeDB[]}>{
+    try{
+        const session = await isLogin()
+        if(!session) throw new Error("User not Sign in")
+        const data = await prisma.user.findMany({
+            skip:start,
+            take:limit
+        })
+        return {success:true, error:"",data}
+    }catch(e){
+        return {error:"Error Creating Room",success:false,data:[]}
+    }
+}
+
+export async function ToogleAdmin({id,admin}:{id:number,admin:boolean}):Promise<{error:string,success:boolean,}>{
+    try{
+       
+        const data = await prisma.user.update({
+            where:{
+                id
+            },
+            data:{
+                admin
+            }
+        })
+        return {success:true, error:""}
+    }catch(e){
+        return {error:"Error Creating Room",success:false}
+    }
+}

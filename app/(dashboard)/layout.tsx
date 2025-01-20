@@ -14,6 +14,7 @@ export default async function layout({
   const Admin = await isAdmin();
   if (Admin) {
     link.splice(2, 0, { name: "Manage Hotels", href: "/dashboard/hotels", image: "/hotel.png" });
+    link.splice(3, 0, { name: "Users", href: "/dashboard/users", image: "/user.png" });
   }
   return (
     <div className="pt-8">

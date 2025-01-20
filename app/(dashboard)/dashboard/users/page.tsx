@@ -1,53 +1,20 @@
 import React from 'react'
-import Navbar from '@/components/Navbar'
-import { getAllHotels } from '@/backend/database'
-import AddHotel from '@/components/AddHotel';
-import { TableRow } from './TableRow';
-import AddNewBooking from '@/components/AddNewBooking';
-import { GetJWTSession } from '@/backend/Auth';
 import { redirect } from 'next/navigation';
+import { GetJWTSession } from '@/backend/Auth';
+import Table from './Table';
+import EditNewBooking from '@/components/EditNewBooking';
+import { getBookingById } from '@/backend/database';
+import { parse } from 'path';
+import { BookingsTypeDB } from '@/backend/Types';
 
-export default async function page() {
-      const token = await GetJWTSession();
-      if(!token) return redirect("/auth");
-    const {data} = await getAllHotels();
-  return (
+export default async function page({ searchParams }:{ searchParams:{hotelID:string} }) {
+        const token = await GetJWTSession();
+        if(!token) return redirect("/auth");
+        
+    return (
     <>
-        <h3 className="text-3xl font-bold dark:text-white mb-5">Bookings</h3>
-        <AddHotel/>
-
-        <div className="h-[88%] overflow-scroll scrollbar-hide ">
-            <table className="w-full text-sm  text-left rtl:text-right text-gray-500 dark:text-gray-400  rounded-xl">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" className="px-6 py-3">
-                        No.
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                        User
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                        Email 
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                        Action
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-            {data?.map((hotel, index) => <TableRow key={index} data={hotel} />)}
-            {data.length == 0 &&<>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td colSpan={4} className="px-6 text-center py-4">
-                        No Users
-                    </td>
-                </tr>
-            </>}
-            </tbody>
-            </table>    
-        </div>
+      <h3 className="text-3xl font-bold dark:text-white mb-5">Users</h3>
+        <Table/>
     </>
   )
 }
-
-

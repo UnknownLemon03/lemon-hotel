@@ -2,9 +2,9 @@
 
 import { PreviewData } from "next";
 import { BookingsType, BookingsTypeDB, HotelType } from "./Types";
-import { AddHotel, AddHotelBooking, DeleteHotel, getAllHotels, LoginUser, SignUpUser, UpdatingBooking } from "./database";
+import { AddHotel, AddHotelBooking, DeleteHotel, getAllHotels, LoginUser, SignUpUser, ToogleAdmin, UpdatingBooking } from "./database";
 import { revalidatePath } from "next/cache";
-import { CreateJWTSession, isLogin } from "./Auth";
+import { CreateJWTSession, isAdmin, isLogin } from "./Auth";
 
 export async function AddNewHotelServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean}>{
     try{
@@ -163,6 +163,27 @@ export async function BookingEditsServerAction(formData:PreviewData,FromData:For
         }
         console.log(data)
         return req;
+    }catch(e){
+        if(e instanceof Error){
+            return {error:`${e.message}`,success:false}
+        }
+        return {error:"Logout fail",success:false}
+    }
+}
+
+export async function ToogleAdminServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean}>{
+    try{
+        const data = {
+            id:parseInt(FromData.get("id") as string),
+            admin:FromData.get("admin") as string == 'true' ? true : false,
+        }
+        if(isNaN(data.id)) throw new Error("Invalid ID")
+        const session = await isLogin()
+        const Admin = await isAdmin()
+        if(!session) throw new Error("User not Sign in")
+        if(!Admin) throw new Error("Not Authorized")
+        const req = await ToogleAdmin(data);
+        return {success:req.success,error:req.error};
     }catch(e){
         if(e instanceof Error){
             return {error:`${e.message}`,success:false}
