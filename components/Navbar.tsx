@@ -9,8 +9,7 @@ import { useState } from "react";
 export function Navbar({ isLogin }: { isLogin: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
-    { name: "Home", href: "/", onClick: () => {} },
-    { name: "Hotels", href: "/hotels", onClick: () => {} },
+    { name: "Home", href: "/hotels", onClick: () => {} },
   ];
   if (isLogin)
     links.push(
