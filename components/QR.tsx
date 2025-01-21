@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import qrcode from "qrcode"
 import Image from 'next/image';
-export default function QR({url,name,close}:{name:string,url:string,close?:(e?:any)=>void}) {
+import Link from 'next/link';
+export default function QR({url,name,close,closeUrl}:{name:string,url:string,close?:(e?:any)=>void,closeUrl?:string}) {
     const [qrCodeData, setQrCodeData] = useState<string | null>(null);
     if(!close) close = ()=>{}
     useEffect(()=>{
@@ -29,9 +30,9 @@ export default function QR({url,name,close}:{name:string,url:string,close?:(e?:a
                 <a href={url} target='_blank' className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                     Website
                 </a>
-                <span className="font-medium text-gray-600 dark:text-gray-500 cursor-pointer" onClick={close}>
+                <Link href={closeUrl ? closeUrl : "#"} className="font-medium text-gray-600 dark:text-gray-500 cursor-pointer" onClick={close}>
                     close
-                </span>
+                </Link>
 
                 </>
             ) : (

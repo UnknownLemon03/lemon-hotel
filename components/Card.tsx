@@ -6,7 +6,7 @@ import AddNewBooking from './AddNewBooking'
 import { HotelTypeDB } from '@/backend/Types'
 import Slider from './Slider'
 
-export default function Card({data}:{data:HotelTypeDB}) {
+export default function Card({data,close}:{data:HotelTypeDB,close?:()=>void}) {
     const [qr,setQr] = useState(false)
     const [show,setShow] = useState(false);
   return (

@@ -37,7 +37,7 @@ export default async function page({ searchParams }:{ searchParams:{hotelID:stri
                 <Link href={"/dashboard/hotels"}>
                     <Image className='absolute -top-6 -left-6 cursor-pointer' src={"/close.svg"}  height={30} width={30} alt='Close'/>
                 </Link>
-                <QR url={hotelData.url} name={hotelData.name} />
+                <QR url={hotelData.url} name={hotelData.name} closeUrl={"/dashboard/hotels"} />
                 </div>
             </div>
         </>}
