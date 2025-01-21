@@ -1,11 +1,12 @@
 "use server"
 
 import { PreviewData } from "next";
-import { BookingsType, BookingsTypeDB, HotelType } from "./Types";
+import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB, UserType } from "./Types";
 import { AddHotel, AddHotelBooking, DeleteHotel, getAllHotels, LoginUser, SignUpUser, ToogleAdmin, UpdatingBooking } from "./database";
 import { revalidatePath } from "next/cache";
 import { CreateJWTSession, isAdmin, isLogin } from "./Auth";
 import { deleteImageCloud } from "./cloud";
+import { z } from "zod";
 
 export async function AddNewHotelServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean}>{
     try{
@@ -19,7 +20,12 @@ export async function AddNewHotelServerAction(formData:PreviewData,FromData:Form
             pincode:parseInt(FromData.get("pincode") as string),
             images:JSON.parse(FromData.get("images") as string),
         }
-        console.log(data)
+        const validationResult = HotelType.safeParse(data)
+        if (!validationResult.success) {
+            console.log(validationResult.error.errors)
+            const errorMessage = validationResult.error.errors.map((err) => `${err.message}`).join(', ');
+            throw new Error(errorMessage);
+        }
         const req = await AddHotel(data);
         if(req.success)
             revalidatePath("/dashboard/hotels")
@@ -110,11 +116,16 @@ export async function LoginServerAction(formData:PreviewData,FromData:FormData):
 }
 export async function SignUpServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean}>{
     try{
-        const user = {
+        const user:z.infer<typeof UserType> = {
             email:FromData.get("email") as string,
             password:FromData.get("password") as string,
-            id:0,
             admin:false
+        }
+        const validationResult = UserType.safeParse(user)
+        if (!validationResult.success) {
+            console.log(validationResult.error.errors)
+            const errorMessage = validationResult.error.errors.map((err) => `${err.message}`).join(', ');
+            throw new Error(errorMessage);
         }
         const req =  await SignUpUser(user);
         if(!req.success){

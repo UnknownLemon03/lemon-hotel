@@ -1,8 +1,9 @@
 "use server"
 import { PrismaClient } from '@prisma/client';
-import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB, UserTypeDB } from './Types';
+import { BookingsType, BookingsTypeDB, HotelType, HotelTypeDB, UserType, UserTypeDB } from './Types';
 import bcrypt from "bcrypt"
 import { isAdmin, isLogin } from './Auth';
+import { z } from 'zod';
 const prisma  = new PrismaClient();
 
 export async function AddHotel(data:HotelType):Promise<{error:string,success:boolean}>{
@@ -169,7 +170,7 @@ export async function getAllHotels(hotelid?:number):Promise<{error:string,succes
     }
 }
 
-export async function SignUpUser(data:UserTypeDB):Promise<{error:string,success:boolean,data:UserTypeDB|null}>{
+export async function SignUpUser(data:z.infer<typeof UserType>):Promise<{error:string,success:boolean,data:UserTypeDB|null}>{
     try{
         const hashPassword = bcrypt.hashSync(data.password,12);
         const req = await prisma.user.create({
