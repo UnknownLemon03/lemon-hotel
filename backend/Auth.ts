@@ -10,7 +10,7 @@ export async function CreateJWTSession(e:UserTypeDB){
         id:e.id,
         email:e.email,
     }
-    const token = jwt.sign(data,process.env.JWT_SECRETE!,{expiresIn:"12h"});
+    const token = jwt.sign(data,process.env.NEXTJWT_SECRETE!,{expiresIn:"12h"});
     const cookieStore = await cookies();
     cookieStore.set("AUTH",token,{expires:new Date(Date.now()+1000*60*60*12)})
 }
