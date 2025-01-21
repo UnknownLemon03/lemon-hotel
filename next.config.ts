@@ -4,7 +4,12 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: false,
   images: {
-    domains: ['res.cloudinary.com'], // Add the hostname here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com', 
+      },
+    ]
   },
   eslint: {
     ignoreDuringBuilds: true,

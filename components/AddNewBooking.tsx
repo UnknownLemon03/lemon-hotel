@@ -20,7 +20,6 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
         { name: "id_number", placeholder: "ID Proof Number", label: "ID Proof Number", type: "text" },
         { name: "number", placeholder: "Contact Number", label: "Contact Number", type: "number" },
         { name: "address", placeholder: "Address", label: "Address", type: "text" },
-        { name: "purpose", placeholder: "Purpose of Booking", label: "Purpose of Booking", type: "text" },
     ];
     let id: NodeJS.Timeout;
     function closeCard(){
@@ -32,7 +31,7 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
             toast.success("Hotel booking made sucessfully")
             closeCard()
         }else if(!preState.success && preState.error){
-            closeCard()
+            close(false)
             toast.error(preState.error)
         }
         ()=>{
@@ -70,6 +69,14 @@ export default function AddNewBooking({hotelid,close}:{hotelid:number,close:(x:b
                         {e.label}
                     </label>
                 </div>)}
+                <label htmlFor="purpose" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Purpose</label>
+                <select name="purpose" id="purpose" className="mb-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option defaultChecked disabled={true}>Choose a purpose</option>
+                    <option value="Business">Business</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Tourist">Tourist</option>
+                </select>
+
                 <div className='mb-5'>
                     <div className="flex flex-wrap  items-center">
                         <Datepicker options={{minDate:start}} show={date1} setShow={setDate1} selectedDateState={[start,setStart]}/>
