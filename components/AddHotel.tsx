@@ -1,11 +1,12 @@
 'use client'
-import { AddNewHotelServerAction } from '@/backend/serverAction';
+import { AddNewHotelServerAction, DeleteImageUrlServerAction } from '@/backend/serverAction';
 import { HotelType } from '@/backend/Types';
 import { Hotel } from '@prisma/client';
 import React, { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import ImageUpload from './ImageUpload';
+import Image from 'next/image';
 
 export default function AddHotel() {
     const [show,setShow] = useState(false);
@@ -21,6 +22,7 @@ function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateActi
     const [element,setElement] = useState<null|Element>(null)
     const [images,setImages] = useState<string[]>([])
     const [preState,action,isPending] = useActionState(AddNewHotelServerAction,{error:"",success:false})
+    const [preStateDel,actionDel,isPendingDel] = useActionState(DeleteImageUrlServerAction,{error:"",success:false,data:""})
     const FormFileds =[
         {name:"name",placeholder:"Hotel Name",lable:"Hotel Name",type:"text"},
         {name:"city",placeholder:"City Name",lable:"City Name",type:"text"},
@@ -37,6 +39,19 @@ function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateActi
             toast.error(preState.error)
         }
     },[preState])
+    useEffect(()=>{
+        if(preStateDel.success){
+            setImages(arr=>arr.filter(img=>img!=preStateDel.data))
+        }
+    },[preStateDel])
+    function handleDelImage(url:string){
+        if(isPendingDel) return
+        const data = new FormData()
+        data.set("url",url)
+        startTransition(()=>{
+            actionDel(data)
+        })
+    }
     useEffect(()=>{
         setElement(document.querySelector("#portal"))
     },[])
@@ -74,6 +89,12 @@ function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateActi
                         </button>
                     </form>
             </div>
+            {images.length > 0 && <div className={`min-w-96 z-99 p-5 overflow-hidden z-20 grid grid-cols-2 gap-5`}>
+                {images.map((e,i)=><div key={i} className='relative'>
+                   <Image onClick={()=>handleDelImage(e)} alt='hotel' className='absolute top-0 cursor-pointer' src={"/delete.svg"} height={25} width={25} />
+                   <Image alt='hotel' src={e} height={200} width={200} />
+                </div> )}
+            </div>}
         </div>
     
 </>,element)

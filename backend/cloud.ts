@@ -8,9 +8,10 @@ v2.config({
 
 export async function deleteImageCloud(url:string){
   try{
-      let publicId = url.split('/').slice(-2).join('/').slice(0,-4);
-      const data = await v2.uploader.destroy(publicId,(result)=>{
-      })
+    let publicId = url.split('/').slice(-1)[0].split('.')[0]; 
+    const data = await v2.uploader.destroy(publicId);
+      console.log(data)
   }catch(e){
+      console.log(e)
   }
 }

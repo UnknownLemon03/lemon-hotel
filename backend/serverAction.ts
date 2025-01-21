@@ -5,6 +5,7 @@ import { BookingsType, BookingsTypeDB, HotelType } from "./Types";
 import { AddHotel, AddHotelBooking, DeleteHotel, getAllHotels, LoginUser, SignUpUser, ToogleAdmin, UpdatingBooking } from "./database";
 import { revalidatePath } from "next/cache";
 import { CreateJWTSession, isAdmin, isLogin } from "./Auth";
+import { deleteImageCloud } from "./cloud";
 
 export async function AddNewHotelServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean}>{
     try{
@@ -190,5 +191,24 @@ export async function ToogleAdminServerAction(formData:PreviewData,FromData:Form
             return {error:`${e.message}`,success:false}
         }
         return {error:"Logout fail",success:false}
+    }
+}
+
+export async function DeleteImageUrlServerAction(formData:PreviewData,FromData:FormData):Promise<{error:string,success:boolean,data:string}>{
+    try{
+        const data = FromData.get("url") as string
+        
+        const session = await isLogin()
+        const Admin = await isAdmin()
+        if(!session) throw new Error("User not Sign in")
+        if(!Admin) throw new Error("Not Authorized")
+        await deleteImageCloud(data)
+        return {success:true,error:"",data};
+    }catch(e){
+        console.log(e)
+        if(e instanceof Error){
+            return {error:`${e.message}`,success:false,data:""}
+        }
+        return {error:"Logout fail",success:false,data:""}
     }
 }
