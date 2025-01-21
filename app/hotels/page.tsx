@@ -3,6 +3,7 @@ import { getAllHotels, getAllHotelsByName } from "@/backend/database";
 import { HotelTypeDB } from "@/backend/Types";
 import Card from "@/components/Card";
 import Search from "@/components/Search";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -34,10 +35,10 @@ export default function Home() {
           <Search setSearch={setSearch}/>
         </div>
         <div className="flex flex-wrap gap-5 justify-center scrollbar-hide">
-        {hotels.map((e,i)=><div key={i} className="flex justify-center">
+        {hotels.length!=0 && hotels.map((e,i)=><div key={i} className="flex justify-center">
             <Card data={e}/>
           </div>)}
-      
+        {hotels.length==0 && <Image src={"/nothingfound.png"} width={300} height={300} alt="nothing found"/>}
         </div>
       </div>
   </>

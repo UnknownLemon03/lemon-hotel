@@ -5,6 +5,7 @@ import { Hotel } from '@prisma/client';
 import React, { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
+import ImageUpload from './ImageUpload';
 
 export default function AddHotel() {
     const [show,setShow] = useState(false);
@@ -17,7 +18,8 @@ export default function AddHotel() {
 }
 
 function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateAction<boolean>>}) {
-     const [element,setElement] = useState<null|Element>(null)
+    const [element,setElement] = useState<null|Element>(null)
+    const [images,setImages] = useState<string[]>([])
     const [preState,action,isPending] = useActionState(AddNewHotelServerAction,{error:"",success:false})
     const FormFileds =[
         {name:"name",placeholder:"Hotel Name",lable:"Hotel Name",type:"text"},
@@ -41,8 +43,11 @@ function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateActi
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
         const data = e.currentTarget;
         e.preventDefault();
+        // if(images.length == 0) return toast.error("Upload atleast one image")
+        const formData =new FormData(data);
+        formData.set("images",`${JSON.stringify(images)}`)
         startTransition(()=>{
-            action(new FormData(data));
+            action(formData);
         })
     }
     if(!element) return null;
@@ -52,8 +57,9 @@ function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateActi
             onClick={()=>setShow(e=>!e)}
             className={`overflow-clip backdrop-blur-3xl w-full h-screen fixed  z-10`} 
         >
-        <div className='flex justify-center items-center fixed z-10 mx-auto w-full'>
-            <div className={`min-w-96 z-99 p-5 overflow-hidden z-10 flex justify-center items-center`}>
+        </div>
+        <div className='flex justify-center items-center fixed z-20 mx-auto w-full'>
+            <div className={`min-w-96 z-99 p-5 overflow-hidden z-20 flex justify-center items-center`}>
                     <form className="z-10 mx-auto w-full" onSubmit={handleSubmit} >
                         {FormFileds.map((e,i)=><div key={i} className="mb-5 w-full">
                             <label htmlFor={e.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -61,12 +67,13 @@ function AddHotelForm({show,setShow}:{show:boolean,setShow:Dispatch<SetStateActi
                             </label>
                             <input type={e.type} name={e.name} id={e.name} className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="test" required />
                         </div>)}
+
+                        <ImageUpload setUrl={setImages} />
                         <button disabled={isPending} type="submit" className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${isPending && "cursor-not-allowed"}`}>
                             {isPending ? "Submitting..." :"Submit"}
                         </button>
                     </form>
             </div>
-        </div>
         </div>
     
 </>,element)

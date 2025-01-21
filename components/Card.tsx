@@ -15,7 +15,7 @@ export default function Card({data}:{data:HotelTypeDB}) {
         {qr && <QR  url={'https://chatgpt.com/c/678a6b62-8540-8009-adb9-b9c0f96ebec2'} name={data.name} close={()=>setQr(false)} />}
        {!qr &&<> <div className="relative h-fit m-2.5 overflow-hidden text-white rounded-md">
           
-            <Slider/>
+            <Slider images={data.images}/>
         </div>
         <div className="p-4">
             <h6 className="mb-2 text-slate-800 text-xl font-semibold">

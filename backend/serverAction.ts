@@ -16,11 +16,12 @@ export async function AddNewHotelServerAction(formData:PreviewData,FromData:Form
             state:FromData.get("state") as string,
             url:FromData.get("url") as string,
             pincode:parseInt(FromData.get("pincode") as string),
-            images:['some ramdon url'],
+            images:JSON.parse(FromData.get("images") as string),
         }
-        await new Promise((res,err)=>{ setTimeout(()=>res(true),1000)})
+        console.log(data)
         const req = await AddHotel(data);
-        revalidatePath("/dashboard/hotels")
+        if(req.success)
+            revalidatePath("/dashboard/hotels")
         return req
     }catch(e){
         if(e instanceof Error){

@@ -2,18 +2,15 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-const Slider = () => {
+const Slider = ({images}:{images:string[]}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const images = [
-    "/test.png",
-    "/home.png",
-    "/test.png",
-    "/test.png",
-    "/test.png",
-    "/test.png",
-  ];
-
+  if(images.length == 0){
+    images.push("/noimage.png")
+  }else{
+    images = images.map(e=>{
+      return e+"?w=274&h=192&crop=fill"
+    })
+  }
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % images.length);
   };
@@ -39,7 +36,7 @@ const Slider = () => {
       </div>
 
       {/* Slider controls */}
-      <button
+      {images.length > 1 && <button
         onClick={prevSlide}
         className="absolute top-0 start-0 z-5 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       >
@@ -61,9 +58,9 @@ const Slider = () => {
           </svg>
           <span className="sr-only">Previous</span>
         </span>
-      </button>
+      </button>}
 
-      <button
+     {images.length > 1 && <button
         onClick={nextSlide}
         className="absolute top-0 end-0 z-5 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       >
@@ -85,10 +82,10 @@ const Slider = () => {
           </svg>
           <span className="sr-only">Next</span>
         </span>
-      </button>
+      </button>}
 
       {/* Slider indicators */}
-      <div className="absolute z-5 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+      {images.length > 1 && <div className="absolute z-5 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
         {images.map((_, index) => (
           <button
             key={index}
@@ -96,7 +93,7 @@ const Slider = () => {
             className={`w-3 h-3 rounded-full ${currentSlide === index ? 'bg-blue-500' : 'bg-gray-300'}`}
           ></button>
         ))}
-      </div>
+      </div>}
     </div>
   );
 };

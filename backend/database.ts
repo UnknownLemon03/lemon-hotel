@@ -14,10 +14,10 @@ export async function AddHotel(data:HotelType):Promise<{error:string,success:boo
               state: data.state,
               pincode: data.pincode,
               area: data.area,
-              url:data.url
-            //   images: {
-            //     create: data.images.map((url) => ({ url })),
-            //   },
+              url:data.url,
+              images: {
+                create: data.images.map((url) => ({ url })),
+              },
             },
           });
         return {success:true, error:""}
