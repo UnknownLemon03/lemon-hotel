@@ -96,7 +96,8 @@ export async function getAllHotelsByName(hotelName:string):Promise<{error:string
         const req = await prisma.hotel.findMany({
             where:{
                 name:{
-                    contains:hotelName
+                    contains:hotelName,
+                     mode: 'insensitive'
                 }
             },
             include:{
