@@ -2,20 +2,23 @@
 import { LogOut } from "@/backend/Auth";
 import { link } from "fs";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { useRouter } from "next/router";
 const dynamic = 'force-dynamic'
 export function Navbar({ isLogin }: { isLogin: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter()
+  function refresh(){
+    router.refresh();
+  }
   const links = [
     { name: "Home", href: "/hotels", onClick: () => {} },
   ];
   if (isLogin)
     links.push(
       { name: "Dashboard", href: "/dashboard", onClick: () => {} },
-      { name: "Logout", href: "#", onClick: () => { LogOut().then(e=>{toast.success("Logout Successful")})  } }
+      { name: "Logout", href: "#", onClick: () => { LogOut().then(e=>{refresh();toast.success("Logout Successful")})  } }
     );
   else
     links.push({ name: "Login/SignUp", href: "/auth", onClick: () => {} });
