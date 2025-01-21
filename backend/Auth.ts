@@ -20,7 +20,7 @@ export async function CreateJWTSession(e:UserTypeDB){
 export async function GetJWTSession():Promise<{data:null|string | jwt.JwtPayload,error:boolean}>{
     const cookieStore = await cookies();
     const token = cookieStore.get("AUTH");
-    if(token){
+    if(token && token.value){
         const {value} = token;
         const res = jwt.verify(value,process.env.NEXT_JWT_SECRETE!)
         return {data:res,error:false};
