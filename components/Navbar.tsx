@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { useState } from "react";
-
+import { useRouter } from "next/router";
+const dynamic = 'force-dynamic'
 export function Navbar({ isLogin }: { isLogin: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
@@ -14,7 +15,7 @@ export function Navbar({ isLogin }: { isLogin: boolean }) {
   if (isLogin)
     links.push(
       { name: "Dashboard", href: "/dashboard", onClick: () => {} },
-      { name: "Logout", href: "#", onClick: () => { LogOut(); toast.success("Logout Successful"); } }
+      { name: "Logout", href: "#", onClick: () => { LogOut().then(e=>{toast.success("Logout Successful")})  } }
     );
   else
     links.push({ name: "Login/SignUp", href: "/auth", onClick: () => {} });

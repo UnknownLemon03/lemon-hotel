@@ -17,7 +17,7 @@ export default function QR({url,name,close,closeUrl}:{name:string,url:string,clo
     },[])
    
   return <>
-  <div className='w-full h-full flex justify-center items-center  pt-4 flex-col' onMouseLeave={close}>
+  <div className='w-full h-[407px] flex justify-center items-center  pt-4 flex-col' onMouseLeave={close}>
             {qrCodeData ? (<>
                 <Image
                     className="border border-black rounded-lg"

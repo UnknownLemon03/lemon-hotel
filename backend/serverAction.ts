@@ -106,6 +106,7 @@ export async function LoginServerAction(formData:PreviewData,FromData:FormData):
             throw Error("Error Logining In")
         }
         await CreateJWTSession(req.data!)
+        revalidatePath("/",'layout')
         return {success:req.success,error:req.error};
     }catch(e){
         if(e instanceof Error){
@@ -132,6 +133,7 @@ export async function SignUpServerAction(formData:PreviewData,FromData:FormData)
             throw Error("Error Logining In")
         }
         await CreateJWTSession(req.data!)
+        revalidatePath("/",'layout')
         return {success:req.success,error:req.error};
     }catch(e){
         if(e instanceof Error){

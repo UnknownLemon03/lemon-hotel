@@ -1,21 +1,8 @@
 'use server'
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import ToastProvider from "@/components/ToastProvider";
-import Head from "next/head";
-import Script from "next/script";
 import { isLogin } from "@/backend/Auth";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 
 export default async function RootLayout({
@@ -30,13 +17,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script
-          src="https://unpkg.com/flowbite@1.4.5/dist/flowbite.js"
-          type="text/javascript"
-        />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased  w-full h-screen  bg-blue-200 ` }
+        className={` antialiased  w-full h-screen  bg-blue-200 ` }
       >
         <ToastProvider>
           <>
