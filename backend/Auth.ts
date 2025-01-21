@@ -38,9 +38,11 @@ export async function LogOut(){
 export async function isLogin():Promise<undefined|null|{id:number,name:string}>{
     const cookie = await cookies();
     const token = cookie.get("AUTH");
-    if(!token) return null;
-    const data = jwt.verify(token.value,process.env.NEXT_JWT_SECRETE as string) as {id:number,name:string}
-    return data;
+    if(token && token.value){ 
+        const data = jwt.verify(token.value,process.env.NEXT_JWT_SECRETE as string) as {id:number,name:string}
+        return data;
+    }
+    return null;
 }
 
 export async function isAdmin():Promise<boolean>{
